@@ -24,5 +24,5 @@ else:
 	print(Git("../").status
 	print("Stashing and pulling")
 	Git("../").stash("https://github.com/Aririi/EmiTech.git --include-untracked")
-	Git("../").pull("https://github.com/Sencres013/EmiTech.git")
+	Git("../").pull("https://github.com/Aririi/EmiTech.git")
 	print(Git("../").status())
