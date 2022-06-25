@@ -1,0 +1,1 @@
+xcopy .\.git\* .\git\ /s /e /y
