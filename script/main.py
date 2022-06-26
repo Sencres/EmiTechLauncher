@@ -3,7 +3,10 @@ from pathlib import Path
 from platform import system
 
 if system() == "Windows":
-    scriptPath = Path().resolve()
+    scriptPath = Path().resolve().__str__()
+    # mmc opens script in .minecraft so we replace last occurrence with script
+    scriptPath = "script".join(scriptPath.rsplit(".minecraft", 1))
+    
     gitPath = path.join(scriptPath, "cmd")
     
     # temporarily append git executable folder to path
