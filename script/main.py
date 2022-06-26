@@ -1,4 +1,4 @@
-from os import environ, path
+from os import environ, path, pathsep
 from pathlib import Path
 from platform import system
 
@@ -7,7 +7,7 @@ if system() == "Windows":
     gitPath = path.join(scriptPath, "cmd")
     
     # temporarily append git executable folder to path
-    environ["PATH"] += gitPath
+    environ["PATH"] = gitPath + pathsep + environ["PATH"]
 
     from git import Git
 else:
