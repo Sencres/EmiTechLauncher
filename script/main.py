@@ -77,6 +77,6 @@ if path.exists(f"{localRepoPath}/.git") == False:
 else:
     # crlf being changed to lf pollutes the logs and possibly causes issues
     localRepo.config("core.autocrlf", "false")
-	localRepo.add("."
-    localRepo.stash()
-    localRepo.pull(remoteRepoLink)
+    localRepo.add(".")
+    print(localRepo.stash())
+    print(localRepo.pull(remoteRepoLink))
