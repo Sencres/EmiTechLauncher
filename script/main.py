@@ -11,7 +11,8 @@ if path.exists(f"{localRepoPath}/.git") == False:
 
     # move everything from cloned repo to instance folder
     for file in listdir(f"{localRepoPath}/EmiTech"):
-        move(path.join(f"{localRepoPath}/EmiTech", file), localRepoPath)
+        if path.exists(path.join(f"{localRepoPath}", file)) == False:
+            move(path.join(f"{localRepoPath}/EmiTech", file), localRepoPath)
 
     # delete ./EmiTech
     try:
