@@ -77,12 +77,5 @@ if path.exists(f"{localRepoPath}/.git") == False:
 else:
     # crlf being changed to lf pollutes the logs and possibly causes issues
     localRepo.config("core.autocrlf", "false")
-
-    pathsToStash = [".minecraft/mods",
-                    ".minecraft/config",
-                    "LICENSE",
-                    "README.md"]
-    # stash push only stashes specified files/folders
-    # without push it would stash scripts and configs which breaks everything
-    localRepo.stash("push", "--quiet", "--include-untracked", *pathsToStash)
+    localRepo.stash("--include-untracked")
     localRepo.pull(remoteRepoLink)
