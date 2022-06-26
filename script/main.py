@@ -1,5 +1,23 @@
-from git import Git
-from os import makedirs, path, remove, walk
+from os import environ, path, pathsep
+from pathlib import Path
+from platform import system
+
+if system() == "Windows":
+    workingDir = Path().resolve()
+    gitExecDir = path.join(workingDir, "cmd")
+    
+    # temporarily append git executable folder to path
+    environ["PATH"] += gitExecDir
+
+    from git import Git
+else:
+    try:
+        from git import Git
+    except ImportError:
+        print("You must have git installed on your machine")
+        exit(1)
+
+from os import makedirs, remove, walk
 from shutil import copy, rmtree
 
 remoteRepoLink = "https://github.com/Aririi/EmiTech.git"
@@ -22,10 +40,11 @@ if path.exists(f"{localRepoPath}/.git") == False:
             dstFile = path.join(dstDir, file)
 
             if path.exists(dstFile) and path.samefile(srcFile, dstFile):
-                continue
+                    continue
 
             # copy(), unlike move(), replaces files if they exist
             copy(srcFile, dstDir)
+            remove(srcFile)
 
     # delete cloned repo folder
     try:
@@ -33,5 +52,7 @@ if path.exists(f"{localRepoPath}/.git") == False:
     except OSError as err:
         print(f"Couldn't delete cloned repository: {err.strerror}")
 else:
+    # crlf being changed to lf pollutes the logs and possibly causes issues
+    localRepo.config("core.autocrlf", "false")
     localRepo.stash("--include-untracked")
     localRepo.pull(remoteRepoLink)
