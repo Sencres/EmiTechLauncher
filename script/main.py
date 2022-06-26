@@ -1,13 +1,13 @@
-from os import environ, path, pathsep
+from os import environ, path
 from pathlib import Path
 from platform import system
 
 if system() == "Windows":
-    workingDir = Path().resolve()
-    gitExecDir = path.join(workingDir, "cmd")
+    scriptPath = Path().resolve()
+    gitPath = path.join(scriptPath, "cmd")
     
     # temporarily append git executable folder to path
-    environ["PATH"] += gitExecDir
+    environ["PATH"] += gitPath
 
     from git import Git
 else:
@@ -40,7 +40,8 @@ if path.exists(f"{localRepoPath}/.git") == False:
             dstFile = path.join(dstDir, file)
 
             if path.exists(dstFile) and path.samefile(srcFile, dstFile):
-                    continue
+                remove(srcFile)
+                continue
 
             # copy(), unlike move(), replaces files if they exist
             copy(srcFile, dstDir)
