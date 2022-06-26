@@ -27,7 +27,7 @@ if path.exists(f"{localRepoPath}/.git") == False:
             # copy(), unlike move(), replaces files if they exist
             copy(srcFile, dstDir)
 
-    # delete ./EmiTech
+    # delete cloned repo folder
     try:
         rmtree(f"{localRepoPath}/EmiTech")
     except OSError as err:
