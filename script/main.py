@@ -24,6 +24,7 @@ if path.exists(f"{localRepoPath}/.git") == False:
             if path.exists(dstFile) and path.samefile(srcFile, dstFile):
                 continue
 
+            # copy(), unlike move(), replaces files if they exist
             copy(srcFile, dstDir)
 
     # delete ./EmiTech
