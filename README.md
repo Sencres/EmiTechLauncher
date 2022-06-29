@@ -8,6 +8,7 @@ It is currently set to update from https://github.com/Aririi/EmiTech/
 **Installation steps:**
 - If you do not have MultiMC already, follow the instructions here to download it: https://multimc.org/#Download%20&%20Install
 - Click on the green "*Code*" button, then "*Download ZIP*"
+  - Warning: Do not clone this repo, just pull or download it. It's a bit... busted. It takes up more space than it should, couldn't fix it :(
 - Drag the "*EmiTech-master*" zip folder into MultiMC's GUI, it should open the "*Import from zip*" window. Click "*OK*" to extract it.
 - Configure your instance settings, if needed or preferred. You should know if the instance is configured correctly if there is an icon for it, and when you launch the game the updater script should also run.
 - That's it! Launch the instance and the script should download the content from the configured repository and update every launch (if an update is available).  
