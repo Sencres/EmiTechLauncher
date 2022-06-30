@@ -1,3 +1,4 @@
+from platform import system as platform
 from subprocess import CalledProcessError, PIPE, run, TimeoutExpired
 
 if platform() == "Linux":
