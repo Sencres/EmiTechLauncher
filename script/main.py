@@ -1,33 +1,45 @@
-from os import environ, path, pathsep
+from subprocess import CalledProcessError, PIPE, run, TimeoutExpired
+
+if platform() == "Linux":
+    try:
+        ret = run("../scripts/main.sh",
+                  shell=True,
+                  check=True,
+                  stderr=PIPE,
+                  timeout=10)
+        
+        ret.check_returncode()
+    except TimeoutExpired:
+        print("Unable to open shell script: Connection timed out")
+        exit(1)
+    except CalledProcessError as err:
+        print(("An error occurred in shell script:\n"
+               f"Return code: {err.returncode}\n"
+               f"Error: {err.stderr.decode('utf-8')}"))
+        exit(1)
+
+    exit(0)
+
+from os import environ, makedirs, path, pathsep, remove, system, walk
 from pathlib import Path
-from platform import system as platform
+from shutil import copy, rmtree
 
 scriptPath = Path().resolve().__str__()
 # mmc opens script in .minecraft so we replace last occurrence with script
 scriptPath = "script".join(scriptPath.rsplit(".minecraft", 1))
 
-if platform() == "Windows":
-    gitPath = path.join(scriptPath, "cmd")
-    
-    # temporarily append git executable folder to path
-    environ["PATH"] = gitPath + pathsep + environ["PATH"]
+gitPath = path.join(scriptPath, "cmd")
 
-    from git import Git
-else:
-    try:
-        from git import Git
-    except ImportError:
-        print("You must have git installed on your machine")
-        exit(1)
+# temporarily append git executable folder to path
+environ["PATH"] = gitPath + pathsep + environ["PATH"]
 
-from os import makedirs, remove, system, walk
-from shutil import copy, rmtree
+from git import Git
 
 remoteRepoLink = "https://github.com/Aririi/EmiTech.git"
 localRepoPath = ".."
 localRepo = Git(localRepoPath)
 
-if path.exists(f"{localRepoPath}/.git") == False:
+if not path.exists(f"{localRepoPath}/.git"):
     localRepo.clone(remoteRepoLink)
     # remove temp files
     Git(f"{localRepoPath}/EmiTech").gc("--auto", "--aggressive", "--prune")
@@ -39,11 +51,11 @@ if path.exists(f"{localRepoPath}/.git") == False:
         if not path.exists(dstDir):
             count = 0
             # move() and copy() dont make dest dirs so we gotta make em
-            while path.exists(dstDir) == False:
+            while not path.exists(dstDir):
                 if count == 10:
                     print(f"Copying directory \"{dstDir}\" failed")
                     exit(1)
-                
+
                 makedirs(dstDir)
                 count += 1
 
@@ -51,27 +63,24 @@ if path.exists(f"{localRepoPath}/.git") == False:
             srcFile = path.join(root, file)
             dstFile = path.join(dstDir, file)
 
-            if path.exists(dstFile) and path.samefile(srcFile, dstFile):
-                continue
+            if path.exists(dstFile):
+                if path.samefile(srcFile, dstFile):
+                    continue
+                remove(dstFile)
 
             count = 0
             # copy(), unlike move(), replaces files if they existž
-            while path.exists(dstFile) == False:
+            while not path.exists(dstFile):
                 if count == 10:
                     print(f"Copying file \"{dstFile}\" failed")
                     exit(1)
-                
+
                 copy(srcFile, dstDir)
                 count += 1
 
     # delete cloned repo folder
     try:
-        if platform() == "Windows":
-            system("cd .. && rmdir /s /q EmiTech")
-        elif platform() == "Linux":
-            system("cd .. && rm -rfd EmiTech")
-        else:
-            rmtree(f"{localRepoPath}/EmiTech")
+        system("cd .. && rmdir /s /q EmiTech")
     except OSError as err:
         print(f"Couldn't delete cloned repository folder: {err.strerror}")
 else:
